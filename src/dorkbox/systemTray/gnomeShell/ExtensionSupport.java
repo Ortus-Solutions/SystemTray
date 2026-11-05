@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import dorkbox.executor.Executor;
+import dorkbox.systemTray.util.Utils;
 import dorkbox.os.OS;
 import dorkbox.systemTray.SystemTray;
-import dorkbox.systemTray.util.KotlinUtils;
+import dorkbox.systemTray.util.Utils;
 import dorkbox.util.IO;
 
 @SuppressWarnings({"WeakerAccess"})
@@ -136,7 +136,7 @@ class ExtensionSupport {
         String output;
         try {
             // gsettings get org.gnome.shell enabled-extensions
-            output = KotlinUtils.INSTANCE.execute("/usr/bin/gsettings", "get", "org.gnome.shell", "enabled-extensions");
+            output = Utils.execute("/usr/bin/gsettings", "get", "org.gnome.shell", "enabled-extensions");
         } catch (Exception e) {
             logger.error("Unable to get gnome shell extensions!", e);
             output = "";
@@ -226,7 +226,7 @@ class ExtensionSupport {
         // gsettings set org.gnome.shell enabled-extensions "['background-logo@fedorahosted.org']"
         // gsettings set org.gnome.shell enabled-extensions "['background-logo@fedorahosted.org', 'SystemTray@Dorkbox']"
         try {
-            KotlinUtils.INSTANCE.execute("/usr/bin/gsettings", "set", "org.gnome.shell", "enabled-extensions", stringBuilder.toString());
+            Utils.execute("/usr/bin/gsettings", "set", "org.gnome.shell", "enabled-extensions", stringBuilder.toString());
         } catch (Exception e) {
             logger.error("Unable to set gnome shell extensions!", e);
         }
@@ -244,7 +244,7 @@ class ExtensionSupport {
         String userHome = System.getProperty("user.home");
         final File directory = new File(userHome + "/.local/share/gnome-shell/extensions/" + UID);
         if (directory.canRead()) {
-            KotlinUtils.INSTANCE.delete(directory);
+            Utils.delete(directory);
         }
 
         if (enabled) {
@@ -271,7 +271,7 @@ class ExtensionSupport {
 
         // now we have to restart the gnome shell via bash in a background process
         try {
-            new Executor().command(restartCommand).startAsShellBlocking();
+            Utils.executeAsShellBlocking(restartCommand);
         } catch (Exception e) {
             logger.error("Unable to restart gnome shell!", e);
         }
@@ -485,7 +485,7 @@ class ExtensionSupport {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     protected static
     boolean needsUpgrade(final String metadata, final File metaDatafile) {
-        String existingMetadata = KotlinUtils.INSTANCE.readText(metaDatafile);
+        String existingMetadata = Utils.readText(metaDatafile);
 
         if (SystemTray.DEBUG) {
             logger.debug("Extension already installed, checking for upgrade");

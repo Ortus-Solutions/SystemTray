@@ -435,7 +435,7 @@ class MenuItem extends Entry {
      */
     public
     void setShortcut(final int key) {
-        this.mnemonicKey = SwingUtil.INSTANCE.getFromVirtualKey(key);
+        this.mnemonicKey = SwingUtil.getFromVirtualKey(key);
 
         if (peer != null) {
             ((MenuItemPeer) peer).setShortcut(this);
@@ -496,7 +496,7 @@ class MenuItem extends Entry {
         jMenuItem.setText(getText());
         jMenuItem.setToolTipText(getTooltip());
         jMenuItem.setEnabled(getEnabled());
-        jMenuItem.setMnemonic(SwingUtil.INSTANCE.getVirtualKey(getShortcut()));
+        jMenuItem.setMnemonic(SwingUtil.getVirtualKey(getShortcut()));
 
         jMenuItem.addActionListener(getCallback());
 

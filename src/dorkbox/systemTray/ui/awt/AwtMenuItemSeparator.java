@@ -34,6 +34,6 @@ class AwtMenuItemSeparator implements EntryPeer {
     @Override
     public
     void remove() {
-        SwingUtil.INSTANCE.invokeLater(()->parent._native.remove(_native));
+        SwingUtil.invokeLater(()->parent._native.remove(_native));
     }
 }

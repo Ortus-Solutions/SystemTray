@@ -54,7 +54,7 @@ class SwingMenuItemCheckbox extends SwingMenuItem implements CheckboxPeer {
                 }
 
                 // Having the checkmark size the same size as the letter X is a reasonably nice size.
-                int size = FontUtil.INSTANCE.getFontHeight(jMenuItem.getFont(), "X");
+                int size = FontUtil.getFontHeight(jMenuItem.getFont(), "X");
 
                 String checkmarkPath;
                 if (SystemTray.SWING_UI != null) {
@@ -78,13 +78,13 @@ class SwingMenuItemCheckbox extends SwingMenuItem implements CheckboxPeer {
     @Override
     public
     void setEnabled(final Checkbox menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setEnabled(menuItem.getEnabled()));
+        SwingUtil.invokeLater(()->_native.setEnabled(menuItem.getEnabled()));
     }
 
     @Override
     public
     void setText(final Checkbox menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setText(menuItem.getText()));
+        SwingUtil.invokeLater(()->_native.setText(menuItem.getText()));
     }
 
     @SuppressWarnings("Duplicates")
@@ -126,9 +126,9 @@ class SwingMenuItemCheckbox extends SwingMenuItem implements CheckboxPeer {
     public
     void setShortcut(final Checkbox menuItem) {
         // Will return 0 as the vKey if it's not set (which will remove the shortcut)
-        final int vKey = SwingUtil.INSTANCE.getVirtualKey(menuItem.getShortcut());
+        final int vKey = SwingUtil.getVirtualKey(menuItem.getShortcut());
 
-        SwingUtil.INSTANCE.invokeLater(()->_native.setMnemonic(vKey));
+        SwingUtil.invokeLater(()->_native.setMnemonic(vKey));
     }
 
     @Override
@@ -140,7 +140,7 @@ class SwingMenuItemCheckbox extends SwingMenuItem implements CheckboxPeer {
         if (checked != this.isChecked) {
             this.isChecked = checked;
 
-            SwingUtil.INSTANCE.invokeLater(()->{
+            SwingUtil.invokeLater(()->{
                 if (isChecked) {
                     _native.setIcon(checkedIcon);
                 }
@@ -154,6 +154,6 @@ class SwingMenuItemCheckbox extends SwingMenuItem implements CheckboxPeer {
     @Override
     public
     void setTooltip(final Checkbox menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setToolTipText(menuItem.getTooltip()));
+        SwingUtil.invokeLater(()->_native.setToolTipText(menuItem.getTooltip()));
     }
 }

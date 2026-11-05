@@ -47,13 +47,13 @@ class AwtMenuItem implements MenuItemPeer {
     @Override
     public
     void setEnabled(final dorkbox.systemTray.MenuItem menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setEnabled(menuItem.getEnabled()));
+        SwingUtil.invokeLater(()->_native.setEnabled(menuItem.getEnabled()));
     }
 
     @Override
     public
     void setText(final dorkbox.systemTray.MenuItem menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setLabel(menuItem.getText()));
+        SwingUtil.invokeLater(()->_native.setLabel(menuItem.getText()));
     }
 
     @SuppressWarnings("Duplicates")
@@ -92,9 +92,9 @@ class AwtMenuItem implements MenuItemPeer {
     public
     void setShortcut(final dorkbox.systemTray.MenuItem menuItem) {
         // Will return 0 as the vKey if it's not set (which will remove the shortcut)
-        final int vKey = SwingUtil.INSTANCE.getVirtualKey(menuItem.getShortcut());
+        final int vKey = SwingUtil.getVirtualKey(menuItem.getShortcut());
 
-        SwingUtil.INSTANCE.invokeLater(()->_native.setShortcut(new MenuShortcut(vKey)));
+        SwingUtil.invokeLater(()->_native.setShortcut(new MenuShortcut(vKey)));
     }
 
     @Override
@@ -107,7 +107,7 @@ class AwtMenuItem implements MenuItemPeer {
     @Override
     public
     void remove() {
-        SwingUtil.INSTANCE.invokeLater(()->{
+        SwingUtil.invokeLater(()->{
             _native.deleteShortcut();
             _native.setEnabled(false);
 

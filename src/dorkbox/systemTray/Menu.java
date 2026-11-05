@@ -337,7 +337,7 @@ class Menu extends MenuItem {
         jMenu.setText(getText());
         jMenu.setToolTipText(getTooltip());
         jMenu.setEnabled(getEnabled());
-        jMenu.setMnemonic(SwingUtil.INSTANCE.getVirtualKey(getShortcut()));
+        jMenu.setMnemonic(SwingUtil.getVirtualKey(getShortcut()));
 
 
         synchronized (menuEntries) {

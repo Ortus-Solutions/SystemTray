@@ -18,7 +18,7 @@ package dorkbox.systemTray.gnomeShell;
 import java.io.File;
 
 import dorkbox.systemTray.SystemTray;
-import dorkbox.systemTray.util.KotlinUtils;
+import dorkbox.systemTray.util.Utils;
 
 @SuppressWarnings({"WeakerAccess"})
 public
@@ -68,7 +68,7 @@ class DownloadExtensionSupport {
             File versionInfo = new File(TEMP_DIR, "saved_version.txt");
 
             if (versionInfo.canRead()) {
-                String saved = KotlinUtils.INSTANCE.readText(versionInfo);
+                String saved = Utils.readText(versionInfo);
                 if (!gnomeVersion.equals(saved)) {
                     // our version has changed, reinstall!.
                     isInstalled = false;
@@ -85,7 +85,7 @@ class DownloadExtensionSupport {
         boolean isSuccess = false;
         int count = 5;
         while (count-- > 0) {
-            String successString = KotlinUtils.INSTANCE.execute("gdbus", "call", "--session",
+            String successString = Utils.execute("gdbus", "call", "--session",
                                                                 "--dest", "org.gnome.Shell.Extensions",
                                                                 "--object-path", "/org/gnome/Shell/Extensions",
                                                                 "--method", "org.gnome.Shell.Extensions.InstallRemoteExtension",
@@ -115,7 +115,7 @@ class DownloadExtensionSupport {
         String userHome = System.getProperty("user.home");
         final File directory = new File(userHome + "/.local/share/gnome-shell/extensions/" + UID);
         if (directory.canRead()) {
-            KotlinUtils.INSTANCE.delete(directory);
+            Utils.delete(directory);
         }
 
         if (enabled) {

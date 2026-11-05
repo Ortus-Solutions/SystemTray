@@ -50,13 +50,13 @@ class AwtOsxMenuItemCheckbox implements CheckboxPeer {
     @Override
     public
     void setEnabled(final Checkbox menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setEnabled(menuItem.getEnabled()));
+        SwingUtil.invokeLater(()->_native.setEnabled(menuItem.getEnabled()));
     }
 
     @Override
     public
     void setText(final Checkbox menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setLabel(menuItem.getText()));
+        SwingUtil.invokeLater(()->_native.setLabel(menuItem.getText()));
     }
 
     @SuppressWarnings("Duplicates")
@@ -99,9 +99,9 @@ class AwtOsxMenuItemCheckbox implements CheckboxPeer {
     public
     void setShortcut(final Checkbox menuItem) {
         // Will return 0 as the vKey if it's not set (which will remove the shortcut)
-        final int vKey = SwingUtil.INSTANCE.getVirtualKey(menuItem.getShortcut());
+        final int vKey = SwingUtil.getVirtualKey(menuItem.getShortcut());
 
-        SwingUtil.INSTANCE.invokeLater(()->_native.setShortcut(new MenuShortcut(vKey)));
+        SwingUtil.invokeLater(()->_native.setShortcut(new MenuShortcut(vKey)));
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -112,7 +112,7 @@ class AwtOsxMenuItemCheckbox implements CheckboxPeer {
         String tooltipText = menuItem.getTooltip();
 
         if (peerObj != null && tooltipText != null) {
-            SwingUtil.INSTANCE.invokeLater(()-> {
+            SwingUtil.invokeLater(()-> {
                 try {
                     AwtAccessor.setToolTipText(peerObj, tooltipText);
                 } catch (Exception e) {
@@ -131,7 +131,7 @@ class AwtOsxMenuItemCheckbox implements CheckboxPeer {
         if (checked != this.isChecked) {
             this.isChecked = checked;
 
-            SwingUtil.INSTANCE.invokeLater(()->_native.setState(isChecked));
+            SwingUtil.invokeLater(()->_native.setState(isChecked));
         }
     }
 
@@ -139,7 +139,7 @@ class AwtOsxMenuItemCheckbox implements CheckboxPeer {
     @Override
     public
     void remove() {
-        SwingUtil.INSTANCE.invokeLater(()->{
+        SwingUtil.invokeLater(()->{
             _native.deleteShortcut();
             _native.setEnabled(false);
 

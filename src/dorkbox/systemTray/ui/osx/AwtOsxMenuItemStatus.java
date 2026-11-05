@@ -39,7 +39,7 @@ class AwtOsxMenuItemStatus implements StatusPeer {
     @Override
     public
     void setText(final Status menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->{
+        SwingUtil.invokeLater(()->{
             Font font = _native.getFont();
             if (font == null) {
                 font = new Font(DIALOG, Font.BOLD, 12); // the default font used for dialogs.
@@ -59,6 +59,6 @@ class AwtOsxMenuItemStatus implements StatusPeer {
     @Override
     public
     void remove() {
-        SwingUtil.INSTANCE.invokeLater(()->parent._native.remove(_native));
+        SwingUtil.invokeLater(()->parent._native.remove(_native));
     }
 }

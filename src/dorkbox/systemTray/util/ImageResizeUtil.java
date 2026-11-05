@@ -76,15 +76,14 @@ class ImageResizeUtil {
 
         try {
             @SuppressWarnings("ConstantConditions")
-            InputStream imageStream = ImageResizeUtil.class.getResource("error_32.png").openStream();
+            InputStream errorImageStream = ImageResizeUtil.class.getResource("error_32.png").openStream();
 
             // have to resize the image to be whatever size we specify
-            imageStream = makeByteArrayInputStream(imageStream);
-            imageStream.mark(0);
+            final ByteArrayInputStream imageStream = makeByteArrayInputStream(errorImageStream);
 
             // check if we already have this file information saved to disk, based on size + hash of data
-            final String cacheName = size + "_" + CacheUtil.Companion.createNameAsHash(imageStream);
-            ((ByteArrayInputStream) imageStream).reset();  // casting to avoid unnecessary try/catch for IOException
+            final String cacheName = size + "_" + CacheUtil.createNameAsHash(imageStream);
+            imageStream.reset();
 
 
             // if we already have this fileName, reuse it
@@ -161,14 +160,15 @@ class ImageResizeUtil {
 
         // no cached file, so we resize then save the new one.
         boolean needsResize = true;
+
+        ByteArrayInputStream byteStream = null;
         try {
-            imageStream = makeByteArrayInputStream(imageStream);
-            imageStream.mark(0);
+            // NOTE: this CONSUMES and closes the supplied stream, so everything below must only use our in-memory copy.
+            byteStream = makeByteArrayInputStream(imageStream);
 
             // check if we already have this file information saved to disk, based on size + hash of data
-            cacheName = size + "_" + CacheUtil.Companion.createNameAsHash(imageStream);
-            ((ByteArrayInputStream) imageStream).reset();  // casting to avoid unnecessary try/catch for IOException
-
+            cacheName = size + "_" + CacheUtil.createNameAsHash(byteStream);
+            byteStream.reset();
 
             // if we already have this fileName, reuse it
             final File check = cache.check(cacheName);
@@ -176,9 +176,8 @@ class ImageResizeUtil {
                 return check;
             }
 
-
-            imageStream.mark(0);
-            Dimension imageSize = ImageUtil.getImageSize(imageStream);
+            Dimension imageSize = ImageUtil.getImageSize(byteStream);
+            byteStream.reset();
             //noinspection NumericCastThatLosesPrecision
             if (size == (int) imageSize.getHeight() && size == (int) imageSize.getWidth()) {
                 // we can reuse this URL (it's the correct size).
@@ -186,10 +185,19 @@ class ImageResizeUtil {
             }
         } catch (Exception e) {
             // have to serve up the error image instead.
-            SystemTray.logger.error("Error getting image size. Using error icon instead", e);
+            if (e instanceof ClassCastException || e instanceof IOException && e.getMessage() != null && e.getMessage()
+                                                                                                           .contains("Stream Closed")) {
+                SystemTray.logger.error("Error reading image (the supplied stream was already used/closed). Using error icon instead");
+            } else {
+                SystemTray.logger.error("Error getting image size. Using error icon instead", e);
+            }
             return getErrorImage(size);
         } finally {
-            ((ByteArrayInputStream) imageStream).reset();  // casting to avoid unnecessary try/catch for IOException
+            // ONLY our own in-memory copy can be reset here. Resetting (or casting) the caller's stream would throw,
+            // and would mask the original failure.
+            if (byteStream != null) {
+                byteStream.reset();
+            }
         }
 
 
@@ -197,7 +205,7 @@ class ImageResizeUtil {
         if (needsResize) {
             // we have to hop through hoops.
             try {
-                File resizedFile = resizeFileNoCheck(size, imageStream);
+                File resizedFile = resizeFileNoCheck(size, byteStream);
 
                 // now cache that file
                 try {
@@ -217,7 +225,7 @@ class ImageResizeUtil {
         } else {
             // no resize necessary, just cache as is.
             try {
-                return cache.save(cacheName, imageStream);
+                return cache.save(cacheName, byteStream);
             } catch (Exception e) {
                 // have to serve up the error image instead.
                 SystemTray.logger.error("Error caching image. Using error icon instead", e);
@@ -227,16 +235,18 @@ class ImageResizeUtil {
     }
 
     // if this input stream is NOT a ByteArrayInputStream, make it one.
+    // NOTE: this always closes the supplied stream, since it has to be fully read to be copied.
     private static
-    InputStream makeByteArrayInputStream(InputStream imageStream) throws IOException {
-        if (!(imageStream instanceof ByteArrayInputStream)) {
-            // have to make a copy of the inputStream, but only if necessary
-            ByteArrayOutputStream byteArrayOutputStream = IO.copyStream(imageStream);
-            imageStream.close();
-
-            imageStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+    ByteArrayInputStream makeByteArrayInputStream(InputStream imageStream) throws IOException {
+        if (imageStream instanceof ByteArrayInputStream) {
+            return (ByteArrayInputStream) imageStream;
         }
-        return imageStream;
+
+        // have to make a copy of the inputStream, but only if necessary
+        ByteArrayOutputStream byteArrayOutputStream = IO.copyStream(imageStream);
+        imageStream.close();
+
+        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     }
 
 

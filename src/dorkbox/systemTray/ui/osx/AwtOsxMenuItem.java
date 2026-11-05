@@ -57,7 +57,7 @@ class AwtOsxMenuItem implements MenuItemPeer {
 
         if (peerObj != null && imageFile != null) {
             Image image = new ImageIcon(imageFile.getAbsolutePath()).getImage();
-            SwingUtil.INSTANCE.invokeLater(()-> {
+            SwingUtil.invokeLater(()-> {
                 try {
                     AwtAccessor.setImage(peerObj, image);
                 } catch (Exception e) {
@@ -70,13 +70,13 @@ class AwtOsxMenuItem implements MenuItemPeer {
     @Override
     public
     void setEnabled(final MenuItem menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setEnabled(menuItem.getEnabled()));
+        SwingUtil.invokeLater(()->_native.setEnabled(menuItem.getEnabled()));
     }
 
     @Override
     public
     void setText(final MenuItem menuItem) {
-        SwingUtil.INSTANCE.invokeLater(()->_native.setLabel(menuItem.getText()));
+        SwingUtil.invokeLater(()->_native.setLabel(menuItem.getText()));
     }
 
     @SuppressWarnings("Duplicates")
@@ -115,9 +115,9 @@ class AwtOsxMenuItem implements MenuItemPeer {
     public
     void setShortcut(final MenuItem menuItem) {
         // Will return 0 as the vKey if it's not set (which will remove the shortcut)
-        final int vKey = SwingUtil.INSTANCE.getVirtualKey(menuItem.getShortcut());
+        final int vKey = SwingUtil.getVirtualKey(menuItem.getShortcut());
 
-        SwingUtil.INSTANCE.invokeLater(()->_native.setShortcut(new MenuShortcut(vKey)));
+        SwingUtil.invokeLater(()->_native.setShortcut(new MenuShortcut(vKey)));
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -128,7 +128,7 @@ class AwtOsxMenuItem implements MenuItemPeer {
         String tooltipText = menuItem.getTooltip();
 
         if (peerObj != null && tooltipText != null) {
-            SwingUtil.INSTANCE.invokeLater(()-> {
+            SwingUtil.invokeLater(()-> {
                 try {
                     AwtAccessor.setToolTipText(peerObj, tooltipText);
                 } catch (Exception e) {
@@ -142,7 +142,7 @@ class AwtOsxMenuItem implements MenuItemPeer {
     @Override
     public
     void remove() {
-        SwingUtil.INSTANCE.invokeLater(()->{
+        SwingUtil.invokeLater(()->{
             _native.deleteShortcut();
             _native.setEnabled(false);
 

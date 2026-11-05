@@ -118,7 +118,7 @@ class SizeAndScaling {
         // generic method to do this, but not as accurate
         final AtomicInteger iconSize = new AtomicInteger();
 
-        SwingUtil.INSTANCE.invokeAndWaitQuietly(()->{
+        SwingUtil.invokeAndWaitQuietly(()->{
             JMenuItem jMenuItem = new JMenuItem();
 
             // do the same modifications that would also happen (if specified) for the actual displayed menu items
@@ -127,7 +127,7 @@ class SizeAndScaling {
             }
 
             // this is the largest size of an image used in a JMenuItem, before the size of the JMenuItem is forced to be larger
-            int height = SwingUtil.INSTANCE.getLargestIconHeightForButton(jMenuItem);
+            int height = SwingUtil.getLargestIconHeightForButton(jMenuItem);
             iconSize.set(height);
         });
         return iconSize.get();

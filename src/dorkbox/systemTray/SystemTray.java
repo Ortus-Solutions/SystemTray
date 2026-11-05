@@ -152,8 +152,6 @@ class SystemTray {
     }
 
     static {
-        // Add this project to the updates system, which verifies this class + UUID + version information
-        dorkbox.updates.Updates.INSTANCE.add(SystemTray.class, "b35c107332d844559a3f877fcef42a21", getVersion());
     }
 
     /**
@@ -863,7 +861,7 @@ class SystemTray {
             if (RenderProvider.isDefault() &&
                 (trayType == TrayType.Swing || trayType == TrayType.Awt || trayType == TrayType.Osx)) {
                 // have to construct swing stuff inside the swing EDT
-                SwingUtil.INSTANCE.invokeAndWait(()->{
+                SwingUtil.invokeAndWait(()->{
                     try {
                         reference.set((Tray) trayClass.getConstructors()[0].newInstance(trayName, imageResizeUtil, onRemoveEvent));
                     } catch (Exception e) {

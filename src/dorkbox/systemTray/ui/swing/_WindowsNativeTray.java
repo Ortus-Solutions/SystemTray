@@ -112,7 +112,7 @@ class _WindowsNativeTray extends Tray {
                 // want to make sure keep the tooltip text the same as before.
                 setTooltip_(tooltipText);
 
-                SwingUtil.INSTANCE.invokeLater(()->{
+                SwingUtil.invokeLater(()->{
                     if (popupMenu == null) {
                         TrayPopup popupMenu = (TrayPopup) _native;
                         popupMenu.pack();

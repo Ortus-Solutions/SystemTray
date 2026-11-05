@@ -216,7 +216,7 @@ class Checkbox extends Entry {
      */
     public
     void setShortcut(final int key) {
-        this.mnemonicKey = SwingUtil.INSTANCE.getFromVirtualKey(key);
+        this.mnemonicKey = SwingUtil.getFromVirtualKey(key);
 
         if (peer != null) {
             ((CheckboxPeer) peer).setShortcut(this);
@@ -275,7 +275,7 @@ class Checkbox extends Entry {
         jCheckBoxMenuItem.setText(getText());
         jCheckBoxMenuItem.setToolTipText(getTooltip());
         jCheckBoxMenuItem.setEnabled(getEnabled());
-        jCheckBoxMenuItem.setMnemonic(SwingUtil.INSTANCE.getVirtualKey(getShortcut()));
+        jCheckBoxMenuItem.setMnemonic(SwingUtil.getVirtualKey(getShortcut()));
 
         jCheckBoxMenuItem.setState(getChecked());
         jCheckBoxMenuItem.addActionListener(getCallback());

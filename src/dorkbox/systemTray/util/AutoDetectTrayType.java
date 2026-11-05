@@ -378,7 +378,7 @@ class AutoDetectTrayType {
                             continue;
                         }
 
-                        String line = FileUtil.INSTANCE.readFirstLine(status);
+                        String line = FileUtil.readFirstLine(status);
                         if (line != null && line.contains("indicator-app")) {
                             // make sure we can also load the library (it might be the wrong version)
                             return TrayType.AppIndicator;

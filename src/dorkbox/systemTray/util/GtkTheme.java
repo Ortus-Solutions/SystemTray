@@ -251,7 +251,7 @@ class GtkTheme {
         // sometimes the scaling-factor is set. If we have gsettings, great! otherwise try KDE
         if (screenScale.get() == 0) {
             try {
-                String output = KotlinUtils.INSTANCE.execute("/usr/bin/gsettings", "get", "org.gnome.desktop.interface", "scaling-factor");
+                String output = Utils.execute("/usr/bin/gsettings", "get", "org.gnome.desktop.interface", "scaling-factor");
                 if (!output.isEmpty() && !output.endsWith("not found")) {
                     // DEFAULT icon size is 16. HiDpi changes this scale, so we should use it as well.
                     // should be: uint32 0  or something
@@ -283,7 +283,7 @@ class GtkTheme {
             try {
                 File customSettings = new File("/usr/bin/startkde-custom");
                 if (customSettings.canRead()) {
-                    List<String> lines = KotlinUtils.INSTANCE.readLines(customSettings);
+                    List<String> lines = Utils.readLines(customSettings);
                     for (String line : lines) {
                         String str = "export GDK_SCALE=";
                         int i = line.indexOf(str);
@@ -338,7 +338,7 @@ class GtkTheme {
 
             File mainFile = new File("/usr/share/plasma/plasmoids/org.kde.plasma.private.systemtray/contents/config/main.xml");
             if (mainFile.canRead()) {
-                List<String> lines = KotlinUtils.INSTANCE.readLines(mainFile);
+                List<String> lines = Utils.readLines(mainFile);
                 boolean found = false;
                 int index;
                 for (final String line : lines) {
@@ -358,7 +358,7 @@ class GtkTheme {
                         //    16, 22, 32, 48, 64, 128 pixels.
                         // On high DPI systems those values would be scaled up, depending on the DPI.
                         int imageSize = 0;
-                        Integer imageSizeEnum = KotlinUtils.INSTANCE.toInteger(substring);
+                        Integer imageSizeEnum = Utils.toInteger(substring);
                         if (imageSizeEnum != null) {
                             switch (imageSizeEnum) {
                                 case 0:
@@ -480,7 +480,7 @@ class GtkTheme {
                         if (i >= 0) {
                             String size = iconSizes.substring(i + var.length(), iconSizes.indexOf(",", i));
 
-                            Integer sizeInt = KotlinUtils.INSTANCE.toInteger(size);
+                            Integer sizeInt = Utils.toInteger(size);
                             if (sizeInt != null) {
                                 traySize.set(sizeInt);
                                 return;

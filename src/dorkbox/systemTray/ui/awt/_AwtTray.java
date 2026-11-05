@@ -79,7 +79,7 @@ class _AwtTray extends Tray {
             @Override
             public
             void setEnabled(final MenuItem menuItem) {
-                SwingUtil.INSTANCE.invokeLater(()->{
+                SwingUtil.invokeLater(()->{
                     if (tray == null) {
                         tray = SystemTray.getSystemTray();
                     }
@@ -131,7 +131,7 @@ class _AwtTray extends Tray {
             void setImage(final MenuItem menuItem) {
                 imageFile = menuItem.getImage();
 
-                SwingUtil.INSTANCE.invokeLater(()->{
+                SwingUtil.invokeLater(()->{
                     if (tray == null) {
                         tray = SystemTray.getSystemTray();
                     }
@@ -206,7 +206,7 @@ class _AwtTray extends Tray {
 
                 tooltipText = text;
 
-                SwingUtil.INSTANCE.invokeLater(()->{
+                SwingUtil.invokeLater(()->{
                     // don't want to matter which (setImage/setTooltip/setEnabled) is done first, and if the image/enabled is changed, we
                     // want to make sure keep the tooltip text the same as before.
                     if (trayIcon != null) {
@@ -226,7 +226,7 @@ class _AwtTray extends Tray {
                     imageCache.clear();
                 }
 
-                SwingUtil.INSTANCE.invokeAndWaitQuietly(()->{
+                SwingUtil.invokeAndWaitQuietly(()->{
                     if (trayIcon != null) {
                         trayIcon.setPopupMenu(null);
                         if (tray != null) {

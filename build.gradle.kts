@@ -32,8 +32,6 @@ plugins {
     id("com.dorkbox.GradlePublish") version "1.22"
 
     id("com.github.johnrengelman.shadow") version "8.1.1"
-
-    kotlin("jvm") version "1.9.0"
 }
 
 // TODO: check if there are any images. ONLY if there are images, then we set all menu entries to have image offsets.
@@ -117,26 +115,17 @@ sourceSets {
             resources {
                 setSrcDirs(listOf("src"))
                 include("dorkbox/systemTray/gnomeShell/extension.js",
-                        "dorkbox/systemTray/util/error_32.png")
+                        "dorkbox/systemTray/util/error_32.png",
+                        "resources/*.png")
             }
-        }
-
-        kotlin {
-            setSrcDirs(listOf("src"))
         }
     }
 
     normalExample {
         java {
-            setSrcDirs(listOf("test-normal"))
+            setSrcDirs(listOf("test-normal", "test-shared"))
             // only want to include java files for the source. 'setSrcDirs' resets includes...
             include("**/*.java")
-        }
-
-        kotlin {
-            setSrcDirs(listOf("test-normal"))
-            // only want to include kt files for the source. 'setSrcDirs' resets includes...
-            include("**/*.kt")
         }
 
         resources {
@@ -144,21 +133,20 @@ sourceSets {
             include("dorkbox/*.png")
         }
 
-        compileClasspath += sourceSets["main"].compileClasspath
-        runtimeClasspath += sourceSets["main"].runtimeClasspath
+        // NOTE: the example dependencies (logback, and the JavaFX/SWT jars) are declared on the `<name>Compile`
+        // configurations above, so they have to be linked into the source set explicitly. This used to happen as a
+        // side effect of the Kotlin plugin creating a `<name>Api` configuration, which no longer exists.
+        compileClasspath += normalExampleCompile
+        compileClasspath += sourceSets["main"].output
+        runtimeClasspath += normalExampleConfig
+        runtimeClasspath += sourceSets["main"].output
     }
 
     javaFxExample {
         java {
-            setSrcDirs(listOf("test-javaFx"))
+            setSrcDirs(listOf("test-javaFx", "test-shared"))
             // only want to include java files for the source. 'setSrcDirs' resets includes...
             include("**/*.java")
-        }
-
-        kotlin {
-            setSrcDirs(listOf("test-javaFx"))
-            // only want to include kt files for the source. 'setSrcDirs' resets includes...
-            include("**/*.kt")
         }
 
         resources {
@@ -166,21 +154,18 @@ sourceSets {
             include("dorkbox/*.png")
         }
 
-        compileClasspath += sourceSets["main"].compileClasspath
-        runtimeClasspath += sourceSets["main"].runtimeClasspath
+        // see the note on normalExample - these configs hold the JavaFX dependencies
+        compileClasspath += javaFxExampleCompile
+        compileClasspath += sourceSets["main"].output
+        runtimeClasspath += javaFxExampleConfig
+        runtimeClasspath += sourceSets["main"].output
     }
 
     swtExample {
         java {
-            setSrcDirs(listOf("test-swt"))
+            setSrcDirs(listOf("test-swt", "test-shared"))
             // only want to include java files for the source. 'setSrcDirs' resets includes...
             include("**/*.java")
-        }
-
-        kotlin {
-            setSrcDirs(listOf("test-swt"))
-            // only want to include kt files for the source. 'setSrcDirs' resets includes...
-            include("**/*.kt")
         }
 
         resources {
@@ -188,8 +173,11 @@ sourceSets {
             include("dorkbox/*.png")
         }
 
-        compileClasspath += sourceSets["main"].compileClasspath
-        runtimeClasspath += sourceSets["main"].runtimeClasspath
+        // see the note on normalExample - these configs hold the SWT dependencies
+        compileClasspath += swtExampleCompile
+        compileClasspath += sourceSets["main"].output
+        runtimeClasspath += swtExampleConfig
+        runtimeClasspath += sourceSets["main"].output
     }
 }
 
@@ -220,14 +208,6 @@ dependencies {
     // 3.108.0 is the MOST RECENT version supported by x86. All newer version no longer support x86
     // 3.1116.100 is the MOST RECENT version supported by macos ARM.
     val swtVersion = "3.122.0"
-
-    api("com.dorkbox:Collections:2.8")
-    api("com.dorkbox:Executor:3.14")
-    api("com.dorkbox:Desktop:1.1")
-    api("com.dorkbox:JNA:1.4")
-    api("com.dorkbox:OS:1.11")
-    api("com.dorkbox:Updates:1.1")
-    api("com.dorkbox:Utilities:1.48")
 
     api("org.javassist:javassist:3.30.1-GA")
 
@@ -371,12 +351,19 @@ task<JavaExec>("SystemTray_swt") {
 ///////////////////////////
 //    Jar Tasks
 ///////////////////////////
+
+// the shadow plugin auto-registers a `shadowJar` task for the main source set, which would produce a redundant
+// `SystemTray-all.jar`. We build exactly the artifacts we want (below), so turn that one off.
+tasks.named<ShadowJar>("shadowJar") {
+    enabled = false
+}
+
 tasks.register<ShadowJar>("normalShadowJar") {
     manifest.inheritFrom(tasks.jar.get().manifest)
     group = "shadow"
 
     manifest {
-        attributes["Main-Class"] = "dorkbox.TestTray"
+        attributes["Main-Class"] = "dorkbox.TestSystemTray"
     }
 
     mergeServiceFiles()
@@ -386,7 +373,10 @@ tasks.register<ShadowJar>("normalShadowJar") {
     from(normalExampleSet.output)
     configurations = listOf(normalExampleConfig)
 
-    archiveBaseName.set(project.name + "-Example")
+    // NOTE: this is the SELF-CONTAINED TEST jar only. It bundles every dependency so that a tester can just run it.
+    //       It is NOT the artifact to ship - see the `jar` task, which contains ONLY dorkbox code.
+    archiveBaseName.set(project.name + "-Test")
+    archiveClassifier.set("")
 }
 
 tasks.register<ShadowJar>("javaFxShadowJar") {
