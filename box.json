@@ -1,0 +1,54 @@
+{
+    "name": "SystemTray",
+    "slug": "SystemTray",
+    "version": "4.5",
+    "author": "Ortus Solutions",
+    "shortDescription": "Cross-platform SystemTray support for Swing/AWT, GtkStatusIcon and AppIndicator",
+    "ProjectURL": "https://github.com/Ortus-Solutions/SystemTray",
+    "license": [
+        {
+            "type": "Apache-2.0",
+            "URL": "https://github.com/Ortus-Solutions/SystemTray/blob/master/LICENSE.txt"
+        }
+    ],
+    "maven": {
+        "installMode": "shared",
+        "installDirectory": "dist/dependencies"
+    },
+    "dependencies": {
+        "org.javassist:javassist": "maven:org.javassist:javassist:3.30.1-GA",
+        "net.java.dev.jna:jna-jpms": "maven:net.java.dev.jna:jna-jpms:5.14.0",
+        "net.java.dev.jna:jna-platform-jpms": "maven:net.java.dev.jna:jna-platform-jpms:5.14.0",
+        "org.slf4j:slf4j-api": "maven:org.slf4j:slf4j-api:2.0.4",
+        "ch.qos.logback:logback-classic": "maven:ch.qos.logback:logback-classic:1.3.5",
+        "ch.qos.logback:logback-core": "maven:ch.qos.logback:logback-core:1.3.5"
+    },
+    "scripts": {
+        "preJavaCompile": [
+            "delete 'dist/classes,dist/test-classes' --force --recurse"
+        ]
+    },
+    "java": {
+        "source": "src",
+        "classes": "dist/classes",
+        "libsDir": "dist",
+        "resources": [ "src-resources" ],
+        "classPath": "dist/dependencies",
+        "compileOptions": {
+            "release": "11",
+            "encoding": "UTF-8"
+        },
+        "jar": true,
+        "jarName": "SystemTray.jar",
+        "manifest": {
+            "Name": "SystemTray",
+            "Specification-Title": "SystemTray",
+            "Specification-Version": "4.5",
+            "Specification-Vendor": "Ortus Solutions",
+            "Implementation-Title": "com.dorkbox.SystemTray",
+            "Implementation-Version": "4.5",
+            "Implementation-Vendor": "Ortus Solutions",
+            "Automatic-Module-Name": "dorkbox.systemtray"
+        }
+    }
+}

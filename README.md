@@ -7,7 +7,7 @@ SystemTray
 [![Gitlab](https://img.shields.io/badge/Gitlab-Dorkbox-orange?logo=gitlab)](https://gitlab.com/dorkbox/SystemTray)
 
 
-Professional, cross-platform **SystemTray** support for *Swing/AWT*, *GtkStatusIcon*, and *AppIndicator* on Java 8+.  
+Professional, cross-platform **SystemTray** support for *Swing/AWT*, *GtkStatusIcon*, and *AppIndicator* on Java 11+.
 
 
 This library provides **OS Native** menus and **Swing/AWT** menus, depending on the OS and Desktop Environment and if AutoDetect (the default) is enabled. 
@@ -38,7 +38,7 @@ The following unique problems are also solved by this library:
  1. Gnome/KDE environments no longer show system-tray icons without special shell extensions installed (this library will install and update them automatically)
 
 
-This is for cross-platform use, specifically - linux 32/64/arm, mac 32/64/arm, and windows 32/64/arm. Java 8+
+This is for cross-platform use, specifically - linux 32/64/arm, mac 32/64/arm, and windows 32/64/arm. Java 11+
 
 &nbsp;  
 &nbsp;  
@@ -408,16 +408,29 @@ Maven Info
 </dependencies>
 ```
 
-Gradle Info
+Building
 ---------
+This project builds with the [CommandBox](https://www.ortusbooks.com/commandbox) task runner. A JDK 11 or newer is required.
+
 ```
-dependencies {
-    ...
-    implementation("com.dorkbox:SystemTray:4.5")
-}
+box task run build
+```
+
+Artifacts are written to `dist/`:
+
+- `SystemTray.jar` - the library (third-party dependencies stay transitive, they are not bundled)
+- `SystemTray-Test.jar` - self-contained fat jar with a test UI, for verifying on a machine:
+  `java -jar dist/SystemTray-Test.jar`
+
+Individual targets:
+
+```
+box task run build.bx install    # download/refresh the Maven dependencies
+box task run build.bx library    # library jar only
+box task run build.bx testJar    # test fat jar only
 ```
 
 License
 ---------
-This project is © 2023 dorkbox llc, and is distributed under the terms of the Apache v2.0 License. See file "LICENSE" for further 
+This project is distributed under the terms of the Apache v2.0 License. See file "LICENSE.txt" for further
 references.
