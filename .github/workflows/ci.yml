@@ -27,7 +27,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    # The task runner compiles with javac (bytecode target 11) and BoxLang needs Java 21+
+    # The task runner compiles with javac (bytecode target 11)
     - name: Set up JDK 21
       uses: actions/setup-java@v2
       with:
@@ -39,11 +39,14 @@ jobs:
         curl -fsSl https://downloads.ortussolutions.com/debs/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/ortussolutions.gpg > /dev/null
         echo "deb [signed-by=/usr/share/keyrings/ortussolutions.gpg] https://downloads.ortussolutions.com/debs-be/noarch /" | sudo tee /etc/apt/sources.list.d/commandbox.list
         sudo apt-get update && sudo apt-get install -y apt-transport-https commandbox
+        # box bootstraps BoxLang on first run and records its location in ~/.bash_profile, so pick that up
+        source /home/runner/.bash_profile
         box version
 
     # Do the build
     - name: Build with the task runner
       run: |
+        source /home/runner/.bash_profile
         box task run build
 
     # The task lays the jar out at dist/release/<version>/systemtray-<version>.jar, which is
