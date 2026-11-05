@@ -1,7 +1,7 @@
 {
     "name": "SystemTray",
     "slug": "systemtray",
-    "version": "4.5",
+    "version": "4.5.1",
     "author": "Ortus Solutions",
     "shortDescription": "Cross-platform SystemTray support for Swing/AWT, GtkStatusIcon and AppIndicator",
     "ProjectURL": "https://github.com/Ortus-Solutions/SystemTray",
@@ -42,10 +42,10 @@
         "manifest": {
             "Name": "SystemTray",
             "Specification-Title": "SystemTray",
-            "Specification-Version": "4.5",
+            "Specification-Version": "${@version}",
             "Specification-Vendor": "Ortus Solutions",
             "Implementation-Title": "com.dorkbox.SystemTray",
-            "Implementation-Version": "4.5",
+            "Implementation-Version": "${@version}",
             "Implementation-Vendor": "Ortus Solutions",
             "Automatic-Module-Name": "dorkbox.systemtray"
         }

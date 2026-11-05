@@ -144,11 +144,14 @@ class SystemTray {
     public static volatile SwingUIFactory SWING_UI = null;
 
     /**
-     * Gets the version number.
+     * Gets the version number, from this library's manifest so that `version` in box.json is the single source of
+     * truth. Returns "dev" when running from loose class files (no jar manifest).
      */
     public static
     String getVersion() {
-        return "4.5";
+        final Package pkg = SystemTray.class.getPackage();
+        final String version = pkg == null ? null : pkg.getImplementationVersion();
+        return version != null && !version.isEmpty() ? version : "dev";
     }
 
     static {

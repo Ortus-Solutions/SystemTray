@@ -29,6 +29,7 @@ import javax.swing.JMenuItem;
 
 import dorkbox.systemTray.peer.MenuItemPeer;
 import dorkbox.systemTray.util.ImageResizeUtil;
+import dorkbox.systemTray.util.Utils;
 import dorkbox.util.SwingUtil;
 
 /**
@@ -115,7 +116,8 @@ class MenuItem extends Entry {
     public
     MenuItem(final String text, final InputStream inputStream, final ActionListener callback) {
         this.text = text;
-        this.unknownImage = inputStream; // imageFile is set in the 'bind' call
+        // the image is only read when this entry is bound, so take a copy now - callers close their stream right away
+        this.unknownImage = Utils.snapshot(inputStream);
         this.callback = callback;
     }
 
@@ -333,7 +335,8 @@ class MenuItem extends Entry {
      */
     public
     void setImage(final InputStream inputStream) {
-        this.unknownImage = inputStream;
+        // the image is only read when this entry is bound, so take a copy now - callers close their stream right away
+        this.unknownImage = Utils.snapshot(inputStream);
 
         if (peer != null) {
             realizeImageFile(); // imageResizeUtil is set in the 'bind' call (which is also when peer is assigned)

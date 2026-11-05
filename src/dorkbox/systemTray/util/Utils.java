@@ -15,6 +15,7 @@
  */
 package dorkbox.systemTray.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -150,6 +151,34 @@ public final class Utils {
         }
 
         return runProcess(builder);
+    }
+
+    /**
+     * Reads the supplied stream fully into memory and returns a stream over that copy.
+     *
+     * The caller's stream is consumed and closed. This is used for images that are handed to us now but not read
+     * until later (menu entries are realized when they are bound), so callers are free to close their own stream
+     * immediately after passing it in.
+     *
+     * @return a stream over the copied bytes, or null if the supplied stream was null or could not be read.
+     */
+    public static
+    InputStream snapshot(final InputStream inputStream) {
+        if (inputStream == null) {
+            return null;
+        }
+
+        try (InputStream stream = inputStream) {
+            final ByteArrayOutputStream output = new ByteArrayOutputStream(Math.max(stream.available(), 8192));
+            final byte[] buffer = new byte[8192];
+            int read;
+            while ((read = stream.read(buffer)) != -1) {
+                output.write(buffer, 0, read);
+            }
+            return new ByteArrayInputStream(output.toByteArray());
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     private static

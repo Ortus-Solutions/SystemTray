@@ -395,17 +395,12 @@ ISSUES:
 &nbsp; 
 &nbsp; 
 
-Maven Info
+Download
 ---------
+The built jar is published to the Ortus downloads bucket:
+
 ```
-<dependencies>
-    ...
-    <dependency>
-      <groupId>com.dorkbox</groupId>
-      <artifactId>SystemTray</artifactId>
-      <version>4.5</version>
-    </dependency>
-</dependencies>
+https://downloads.ortussolutions.com/dorkbox/systemtray/<version>/systemtray-<version>.jar
 ```
 
 Building
