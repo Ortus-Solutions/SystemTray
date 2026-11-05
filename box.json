@@ -17,29 +17,28 @@
     },
     "dependencies": {
         "org.javassist:javassist": "maven:org.javassist:javassist:3.30.1-GA",
-        "net.java.dev.jna:jna-jpms": "maven:net.java.dev.jna:jna-jpms:5.14.0",
-        "net.java.dev.jna:jna-platform-jpms": "maven:net.java.dev.jna:jna-platform-jpms:5.14.0",
-        "org.slf4j:slf4j-api": "maven:org.slf4j:slf4j-api:2.0.4",
-        "ch.qos.logback:logback-classic": "maven:ch.qos.logback:logback-classic:1.3.5",
-        "ch.qos.logback:logback-core": "maven:ch.qos.logback:logback-core:1.3.5"
+        "net.java.dev.jna:jna": "maven:net.java.dev.jna:jna:5.14.0",
+        "net.java.dev.jna:jna-platform": "maven:net.java.dev.jna:jna-platform:5.14.0",
+        "org.slf4j:slf4j-api": "maven:org.slf4j:slf4j-api:2.0.17"
     },
     "scripts": {
         "preJavaCompile": [
-            "delete 'dist/classes,dist/test-classes' --force --recurse"
+            "delete 'dist/classes,dist/release' --force --recurse"
         ]
     },
     "java": {
         "source": "src",
         "classes": "dist/classes",
-        "libsDir": "dist",
+        "libsDir": "dist/release/${@version}",
         "resources": [ "src-resources" ],
         "classPath": "dist/dependencies",
         "compileOptions": {
             "release": "11",
             "encoding": "UTF-8"
         },
-        "jar": true,
-        "jarName": "SystemTray.jar",
+        "fatJar": true,
+        "fatJarName": "systemtray-${@version}.jar",
+        "fatJarJars": [ "dist/dependencies" ],
         "manifest": {
             "Name": "SystemTray",
             "Specification-Title": "SystemTray",

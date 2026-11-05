@@ -416,19 +416,18 @@ This project builds with the [CommandBox](https://www.ortusbooks.com/commandbox)
 box task run build
 ```
 
-Artifacts are written to `dist/`:
-
-- `SystemTray.jar` - the library (third-party dependencies stay transitive, they are not bundled)
-- `SystemTray-Test.jar` - self-contained fat jar with a test UI, for verifying on a machine:
-  `java -jar dist/SystemTray-Test.jar`
-
-Individual targets:
+That produces a single self-contained jar:
 
 ```
-box task run build.bx install    # download/refresh the Maven dependencies
-box task run build.bx library    # library jar only
-box task run build.bx testJar    # test fat jar only
+dist/release/<version>/systemtray-<version>.jar
 ```
+
+The jar bundles everything it needs at runtime - the SystemTray and Notify code, javassist, JNA (including the
+native libraries for every supported platform) and the SLF4J API - so it can be dropped straight onto a
+classpath.
+
+The dependency list, compile settings, manifest and jar layout all live in `box.json`; `build.bx` just runs
+`install` followed by `java compile`.
 
 License
 ---------

@@ -1,52 +1,23 @@
 /**
  * SystemTray build task runner.
  *
- * Everything about the library build lives in box.json - version, dependencies, source paths, resources,
- * manifest and jar settings. This file just drives it.
+ * Everything about the build lives in box.json - version, dependencies, source paths, resources,
+ * manifest and the fat jar settings. This file just drives it.
  *
  * Usage:
  *
- *     box task run build              # install dependencies, build the library jar
- *     box task run build.bx testJar   # self-contained test jar, for handing to testers
+ *     box task run build
+ *
+ * Produces dist/release/<version>/systemtray-<version>.jar
  */
 class {
 
-	/** Default target: install dependencies and build the library jar. */
 	function run() {
 		command( "install" )
 			.flags( "noSave", "force" )
 			.run();
 
 		command( "java compile" )
-			.run();
-	}
-
-	/**
-	 * Self-contained test jar: the library classes, the test UI, and every dependency.
-	 *
-	 * box.json describes the library, so this passes the differing settings inline. The thin jar needs its
-	 * own name - box.json's jarName would otherwise be reused and overwrite SystemTray.jar.
-	 */
-	function testJar() {
-		run();
-
-		command( "java compile" )
-			.params(
-				source       = "test-normal,test-shared",
-				classes      = "dist/test-classes",
-				resources    = "test-resources",
-				classPath    = "dist/dependencies,dist/SystemTray.jar",
-				jar          = true,
-				jarName      = "SystemTray-Test-thin.jar",
-				fatJar      = true,
-				fatJarName  = "SystemTray-Test.jar",
-				fatJarJars  = "dist/dependencies,dist/SystemTray.jar",
-				manifest     = { "Main-Class": "dorkbox.TestSystemTray" }
-			)
-			.run();
-
-		// the thin jar only exists to seed the fat jar, don't ship it
-		command( "delete 'dist/SystemTray-Test-thin.jar' --force" )
 			.run();
 	}
 

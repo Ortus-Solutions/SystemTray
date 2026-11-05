@@ -1,0 +1,68 @@
+# This workflow builds SystemTray with the CommandBox task runner (build.bx) and publishes the jar
+# to the Ortus downloads bucket.
+
+name: SystemTray CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # We get the required keys
+  workflow_call:
+    secrets:
+      AWS_ACCESS_KEY:
+        required: true
+      AWS_ACCESS_SECRET:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # The task runner compiles with javac (bytecode target 11) and BoxLang needs Java 21+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v2
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    # Install BoxLang, then the bx-cli module which provides the `box` task runner CLI
+    - name: Install BoxLang and bx-cli
+      run: |
+        /bin/sh -c "$(curl -fsSL https://install.boxlang.io)"
+        boxlang --version
+        install-bx-module bx-cli
+        # module executables (including our `box`) live in the BoxLang home bin directory
+        echo "$HOME/.boxlang/bin" >> $GITHUB_PATH
+        export PATH="$HOME/.boxlang/bin:$PATH"
+        box version
+
+    # Do the build
+    - name: Build with the task runner
+      run: |
+        box task run build
+
+    # The task lays the jar out at dist/release/<version>/systemtray-<version>.jar, which is
+    # exactly the bucket layout, so the upload is a straight sync of that folder
+    - name: Upload JAR to S3
+
+      # Run the upload on master
+      if: ${{ github.ref == 'refs/heads/master' }}
+
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read
+      env:
+        AWS_S3_BUCKET: "downloads.ortussolutions.com"
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_SECRET }}
+        SOURCE_DIR: "dist/release/"
+        DEST_DIR: "dorkbox/systemtray"
