@@ -34,19 +34,20 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    - name: Install CommandBox
+    # Install BoxLang, then the bx-cli module which provides the `box` task runner CLI
+    - name: Install BoxLang and bx-cli
       run: |
-        curl -fsSl https://downloads.ortussolutions.com/debs/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/ortussolutions.gpg > /dev/null
-        echo "deb [signed-by=/usr/share/keyrings/ortussolutions.gpg] https://downloads.ortussolutions.com/debs-be/noarch /" | sudo tee /etc/apt/sources.list.d/commandbox.list
-        sudo apt-get update && sudo apt-get install -y apt-transport-https commandbox
-        # box bootstraps BoxLang on first run and records its location in ~/.bash_profile, so pick that up
-        source /home/runner/.bash_profile
+        /bin/sh -c "$(curl -fsSL https://install.boxlang.io)"
+        boxlang --version
+        install-bx-module bx-cli
+        # module executables (including our `box`) live in the BoxLang home bin directory
+        echo "$HOME/.boxlang/bin" >> $GITHUB_PATH
+        export PATH="$HOME/.boxlang/bin:$PATH"
         box version
 
     # Do the build
     - name: Build with the task runner
       run: |
-        source /home/runner/.bash_profile
         box task run build
 
     # The task lays the jar out at dist/release/<version>/systemtray-<version>.jar, which is
