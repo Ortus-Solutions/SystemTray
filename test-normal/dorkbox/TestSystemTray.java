@@ -73,6 +73,14 @@ class TestSystemTray {
         notifyMenu.add(new MenuItem("Error", e->notify("Error", "This is an error notification", 2)));
         notifyMenu.add(new Separator());
         notifyMenu.add(new MenuItem("Open the docs", e->notify("Docs", "This is a plain notification", 3)));
+
+        notifyMenu.add(new Separator());
+        notifyMenu.add(new MenuItem("Long text (wrapping)", e->notify("Wrapping test",
+                "The quick brown fox jumps over the lazy dog while the server starts up and the tray icon appears.", 0)));
+        notifyMenu.add(new MenuItem("Very long text (truncation)", e->notify("Truncation test",
+                "This message is deliberately longer than the notification canvas can show so that you can see exactly "
+                + "where the library truncates the text with an ellipsis and whether anything overlaps the title or the icon "
+                + "when it does so, which is what we are checking.", 1)));
         menu.add(notifyMenu);
 
         // submenu: server actions (with icons)

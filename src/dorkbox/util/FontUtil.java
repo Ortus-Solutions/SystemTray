@@ -128,10 +128,54 @@ class FontUtil {
 
             // this can be WRONG, in which case it will just error out
             //noinspection MagicConstant
-            return new java.awt.Font(fontName, style, Integer.parseInt(size));
+            final java.awt.Font font = new java.awt.Font(fontName, style, Integer.parseInt(size));
+
+            // When a family is not installed, the JVM silently substitutes a default - which is often a serif, and
+            // looks nothing like the rest of the OS. Prefer the system UI font in that case.
+            if (!fontName.equalsIgnoreCase(font.getFamily())) {
+                return getSystemUIFont(style, Integer.parseInt(size));
+            }
+
+            return font;
         } catch (Exception e) {
             throw new RuntimeException("Unable to load font info from '" + fontInfo + "'", e);
         }
+    }
+
+    /**
+     * @return the font used by the OS/current look and feel for labels (the "system UI font"), derived to the
+     *          specified style and size. Falls back to the logical sans-serif font if it cannot be determined.
+     */
+    public static
+    java.awt.Font getSystemUIFont(final int style, final int size) {
+        final String family = systemUIFontFamily();
+        return new java.awt.Font(family, style, size);
+    }
+
+    /**
+     * @return a "family style size" string for the system UI font, suitable for {@link #parseFont(String)}.
+     */
+    public static
+    String defaultFontSpec(final int size, final int style) {
+        final String styleName = style == java.awt.Font.BOLD ? "BOLD" : style == java.awt.Font.ITALIC ? "ITALIC" : "PLAIN";
+        return systemUIFontFamily() + " " + styleName + " " + size;
+    }
+
+    private static
+    String systemUIFontFamily() {
+        try {
+            final java.awt.Font uiFont = javax.swing.UIManager.getFont("Label.font");
+            if (uiFont != null) {
+                final String family = uiFont.getFamily();
+                if (family != null && !family.isEmpty()) {
+                    return family;
+                }
+            }
+        } catch (Throwable ignored) {
+            // headless, or the look and feel is not initialized yet
+        }
+
+        return java.awt.Font.SANS_SERIF;
     }
 
 

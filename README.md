@@ -397,10 +397,10 @@ ISSUES:
 
 Download
 ---------
-The built jar is published to the Ortus downloads bucket:
+Releases are published to the Ortus downloads bucket, one folder per version:
 
 ```
-https://downloads.ortussolutions.com/dorkbox/systemtray/<version>/systemtray-<version>.jar
+https://downloads.ortussolutions.com/dorkbox/systemtray/
 ```
 
 Building
@@ -428,3 +428,8 @@ License
 ---------
 This project is distributed under the terms of the Apache v2.0 License. See file "LICENSE.txt" for further
 references.
+
+Third-party notices
+---------
+Notification icons (`resources/dialog-*.png`) are from [Phosphor Icons](https://phosphoricons.com/), used under
+the MIT License. Copyright (c) Phosphor Icons contributors.

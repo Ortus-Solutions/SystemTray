@@ -1,12 +1,13 @@
 /**
  * SystemTray build task runner.
  *
- * Everything about the build lives in box.json - version, dependencies, source paths, resources,
+ * Everything about the library build lives in box.json - version, dependencies, source paths, resources,
  * manifest and the fat jar settings. This file just drives it.
  *
  * Usage:
  *
- *     box task run build
+ *     box task run build              # the library jar
+ *     box task run build.bx testJar   # self-contained jar with the test UI, for testers
  *
  * Produces dist/release/<version>/systemtray-<version>.jar
  */
@@ -14,11 +15,49 @@ class {
 
 	function run() {
 		command( "install" )
-			.flags( "noSave", "force" )
 			.run();
 
 		command( "java compile" )
 			.run();
+	}
+
+	/**
+	 * Self-contained test jar: the library, the test UI and every dependency in one file, so a tester can just run it.
+	 *
+	 * Compiled in a single pass (library + tests together) because box.json's preJavaCompile script clears
+	 * dist/release, which would delete the library jar a separate second pass depends on.
+	 */
+	function testJar() {
+		command( "install" )
+			.run();
+
+		var v = packageVersion();
+		var thinJar = "systemtray-test-thin-" & v & ".jar";
+
+		command( "java compile" )
+			.params(
+				sourcePath         = "src,test-normal,test-shared",
+				classesDirectory   = "dist/test-classes",
+				libsDirectory      = "dist/test",
+				resourcesDirectory = "src-resources,test-resources",
+				classPath          = "dist/dependencies",
+				jar                = true,
+				jarFile            = thinJar,
+				fatJar             = true,
+				fatJarFile         = "systemtray-test-" & v & ".jar",
+				fatJarPaths        = "dist/dependencies",
+				manifest           = { "Main-Class": "dorkbox.TestSystemTray" }
+			)
+			.run();
+
+		// the thin jar only seeds the fat jar
+		command( "delete 'dist/test/" & thinJar & "' --force" )
+			.run();
+	}
+
+	/** The version declared in box.json. */
+	private function packageVersion() {
+		return jsonDeserialize( fileRead( getCWD() & "/box.json" ) ).version;
 	}
 
 }

@@ -27,18 +27,21 @@
         ]
     },
     "java": {
-        "source": "src",
-        "classes": "dist/classes",
-        "libsDir": "dist/release/${@version}",
-        "resources": [ "src-resources" ],
+        "sourcePath": "src",
+        "classesDirectory": "dist/classes",
+        "libsDirectory": "dist/release/${@version}",
+        "resourcesDirectory": [ "src-resources" ],
+        "testSourcePath": "test-normal,test-shared",
+        "testClassesDirectory": "dist/test-classes",
+        "testResourcesDirectory": "test-resources",
         "classPath": "dist/dependencies",
         "compileOptions": {
             "release": "11",
             "encoding": "UTF-8"
         },
         "fatJar": true,
-        "fatJarName": "systemtray-${@version}.jar",
-        "fatJarJars": [ "dist/dependencies" ],
+        "fatJarFile": "systemtray-${@version}.jar",
+        "fatJarPaths": [ "dist/dependencies" ],
         "manifest": {
             "Name": "SystemTray",
             "Specification-Title": "SystemTray",

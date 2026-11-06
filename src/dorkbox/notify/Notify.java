@@ -29,6 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import dorkbox.util.ActionHandler;
+import dorkbox.util.FontUtil;
 import dorkbox.util.ImageUtil;
 import dorkbox.util.LocationResolver;
 import dorkbox.util.Property;
@@ -66,13 +67,13 @@ class Notify {
      * This is the title font used by a notification.
      */
     @Property
-    public static String TITLE_TEXT_FONT = "Source Code Pro BOLD 16";
+    public static String TITLE_TEXT_FONT = FontUtil.defaultFontSpec(16, java.awt.Font.BOLD);
 
     /**
      * This is the main text font used by a notification.
      */
     @Property
-    public static String MAIN_TEXT_FONT = "Source Code Pro BOLD 12";
+    public static String MAIN_TEXT_FONT = FontUtil.defaultFontSpec(14, java.awt.Font.PLAIN);
 
     /**
      * How long we want it to take for the popups to relocate when one is closed
