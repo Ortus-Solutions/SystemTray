@@ -24,11 +24,11 @@ import dorkbox.systemTray.util.ImageResizeUtil;
 import dorkbox.util.SwingUtil;
 
 /**
- * This represents a common menu-checkbox entry, that is cross platform in nature
+ * This represents a common menu-checkbox entry, that is cross platform in
+ * nature
  */
 @SuppressWarnings("unused")
-public
-class Checkbox extends Entry {
+public class Checkbox extends Entry {
     private volatile boolean isChecked = false;
     private volatile String text;
     private volatile ActionListener callback;
@@ -37,25 +37,22 @@ class Checkbox extends Entry {
     private volatile char mnemonicKey;
     private volatile String tooltip;
 
-    public
-    Checkbox() {
+    public Checkbox() {
         this(null, null);
     }
 
-    public
-    Checkbox(final String text) {
+    public Checkbox(final String text) {
         this(text, null);
     }
 
-    public
-    Checkbox(final JCheckBoxMenuItem jCheckBoxMenuItem) {
+    public Checkbox(final JCheckBoxMenuItem jCheckBoxMenuItem) {
         final ActionListener[] actionListeners = jCheckBoxMenuItem.getActionListeners();
-        //noinspection Duplicates
+        // noinspection Duplicates
         if (actionListeners != null) {
             if (actionListeners.length == 1) {
                 setCallback(actionListeners[0]);
             } else {
-                ActionListener actionListener = e->{
+                ActionListener actionListener = e -> {
                     for (ActionListener actionListener1 : actionListeners) {
                         actionListener1.actionPerformed(e);
                     }
@@ -70,19 +67,20 @@ class Checkbox extends Entry {
         setText(jCheckBoxMenuItem.getText());
     }
 
-    public
-    Checkbox(final String text, final ActionListener callback) {
+    public Checkbox(final String text, final ActionListener callback) {
         this.text = text;
         this.callback = callback;
     }
 
     /**
-     * @param peer the platform specific implementation for all actions for this type
-     * @param parent the parent of this menu, null if the parent is the system tray
-     * @param imageResizeUtil the utility used to resize images. This can be Tray specific because of cache requirements
+     * @param peer            the platform specific implementation for all actions
+     *                        for this type
+     * @param parent          the parent of this menu, null if the parent is the
+     *                        system tray
+     * @param imageResizeUtil the utility used to resize images. This can be Tray
+     *                        specific because of cache requirements
      */
-    public
-    void bind(final CheckboxPeer peer, final Menu parent, ImageResizeUtil imageResizeUtil) {
+    public void bind(final CheckboxPeer peer, final Menu parent, ImageResizeUtil imageResizeUtil) {
         super.bind(peer, parent, imageResizeUtil);
 
         peer.setEnabled(this);
@@ -93,10 +91,10 @@ class Checkbox extends Entry {
     }
 
     /**
-     * @return true if this checkbox is selected, false if not. A checkbox's state is set BEFORE the callback is triggered.
+     * @return true if this checkbox is selected, false if not. A checkbox's state
+     *         is set BEFORE the callback is triggered.
      */
-    public
-    boolean getChecked() {
+    public boolean getChecked() {
         return isChecked;
     }
 
@@ -105,8 +103,7 @@ class Checkbox extends Entry {
      *
      * @param isChecked true to show the checkbox, false to hide it
      */
-    public
-    void setChecked(boolean isChecked) {
+    public void setChecked(boolean isChecked) {
         this.isChecked = isChecked;
 
         if (peer != null) {
@@ -117,18 +114,17 @@ class Checkbox extends Entry {
     /**
      * Gets the callback assigned to this menu entry
      */
-    public
-    ActionListener getCallback() {
+    public ActionListener getCallback() {
         return callback;
     }
 
     /**
-     * Sets a callback for a menu entry. This is the action that occurs when one clicks the menu entry
+     * Sets a callback for a menu entry. This is the action that occurs when one
+     * clicks the menu entry
      *
      * @param callback the callback to set. If null, the callback is safely removed.
      */
-    public
-    void setCallback(final ActionListener callback) {
+    public void setCallback(final ActionListener callback) {
         this.callback = callback;
         if (peer != null) {
             ((CheckboxPeer) peer).setCallback(this);
@@ -138,16 +134,14 @@ class Checkbox extends Entry {
     /**
      * @return true if this item is enabled, or false if it is disabled.
      */
-    public
-    boolean getEnabled() {
+    public boolean getEnabled() {
         return this.enabled;
     }
 
     /**
      * Enables, or disables the entry.
      */
-    public
-    void setEnabled(final boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
 
         if (peer != null) {
@@ -158,8 +152,7 @@ class Checkbox extends Entry {
     /**
      * @return the text label that the menu entry has assigned
      */
-    public
-    String getText() {
+    public String getText() {
         return text;
     }
 
@@ -168,8 +161,7 @@ class Checkbox extends Entry {
      *
      * @param text the new text to set
      */
-    public
-    void setText(final String text) {
+    public void setText(final String text) {
         this.text = text;
 
         if (peer != null) {
@@ -178,27 +170,29 @@ class Checkbox extends Entry {
     }
 
     /**
-     * Gets the shortcut key for this menu entry (Mnemonic) which is what menu entry uses to be "selected" via the keyboard while the
+     * Gets the shortcut key for this menu entry (Mnemonic) which is what menu entry
+     * uses to be "selected" via the keyboard while the
      * menu is displayed.
      * <p>
-     * Mnemonics are case-insensitive, and if the character defined by the mnemonic is found within the text, the first occurrence
+     * Mnemonics are case-insensitive, and if the character defined by the mnemonic
+     * is found within the text, the first occurrence
      * of it will be underlined.
      */
-    public
-    char getShortcut() {
+    public char getShortcut() {
         return this.mnemonicKey;
     }
 
     /**
-     * Sets a menu entry shortcut key (Mnemonic) so that menu entry can be "selected" via the keyboard while the menu is displayed.
+     * Sets a menu entry shortcut key (Mnemonic) so that menu entry can be
+     * "selected" via the keyboard while the menu is displayed.
      * <p>
-     * Mnemonics are case-insensitive, and if the character defined by the mnemonic is found within the text, the first occurrence
+     * Mnemonics are case-insensitive, and if the character defined by the mnemonic
+     * is found within the text, the first occurrence
      * of it will be underlined.
      *
      * @param key this is the key to set as the mnemonic
      */
-    public
-    void setShortcut(final char key) {
+    public void setShortcut(final char key) {
         this.mnemonicKey = key;
 
         if (peer != null) {
@@ -207,15 +201,16 @@ class Checkbox extends Entry {
     }
 
     /**
-     * Sets a menu entry shortcut key (Mnemonic) so that menu entry can be "selected" via the keyboard while the menu is displayed.
+     * Sets a menu entry shortcut key (Mnemonic) so that menu entry can be
+     * "selected" via the keyboard while the menu is displayed.
      *
-     * Mnemonics are case-insensitive, and if the character defined by the mnemonic is found within the text, the first occurrence
+     * Mnemonics are case-insensitive, and if the character defined by the mnemonic
+     * is found within the text, the first occurrence
      * of it will be underlined.
      *
      * @param key this is the VK key to set as the mnemonic
      */
-    public
-    void setShortcut(final int key) {
+    public void setShortcut(final int key) {
         this.mnemonicKey = SwingUtil.getFromVirtualKey(key);
 
         if (peer != null) {
@@ -224,26 +219,31 @@ class Checkbox extends Entry {
     }
 
     /**
-     * Specifies the tooltip text, usually this is used to brand the SystemTray icon with your product's name, or to provide extra
+     * Specifies the tooltip text, usually this is used to brand the SystemTray icon
+     * with your product's name, or to provide extra
      * information during mouse-over for menu entries.
      * <p>
-     * NOTE: Maximum length is 64 characters long, and it is not supported on all Operating Systems and Desktop Environments.
+     * NOTE: Maximum length is 64 characters long, and it is not supported on all
+     * Operating Systems and Desktop Environments.
      * <p>
-     * For more details on Linux see https://bugs.launchpad.net/indicator-application/+bug/527458/comments/12.
+     * For more details on Linux see
+     * https://bugs.launchpad.net/indicator-application/+bug/527458/comments/12.
      *
-     * @param tooltipText the text to use as a mouse-over tooltip for the tray icon or menu entry, null to remove.
+     * @param tooltipText the text to use as a mouse-over tooltip for the tray icon
+     *                    or menu entry, null to remove.
      */
-    public
-    void setTooltip(final String tooltipText) {
+    public void setTooltip(final String tooltipText) {
         if (tooltipText != null) {
-            // this is a safety precaution, since the behavior of really long text is undefined.
+            // this is a safety precaution, since the behavior of really long text is
+            // undefined.
             if (tooltipText.length() > 64) {
                 throw new RuntimeException("Tooltip text cannot be longer than 64 characters.");
             }
 
             if (!MenuItem.alreadyEmittedTooltipWarning) {
                 MenuItem.alreadyEmittedTooltipWarning = true;
-                SystemTray.logger.warn("Please disable tooltips, as they are not consistent across all platforms and tray types.");
+                // SystemTray.logger.warn("Please disable tooltips, as they are not consistent
+                // across all platforms and tray types.");
             }
         }
 
@@ -259,17 +259,17 @@ class Checkbox extends Entry {
      *
      * NOTE: This is not consistent across all platforms and tray types.
      */
-    public
-    String getTooltip() {
+    public String getTooltip() {
         return this.tooltip;
     }
 
-
     /**
-     * @return a copy of this Checkbox as a swing JCheckBoxMenuItem, with all elements converted to their respective swing elements. Modifications to the elements of the new JCheckBoxMenuItem will not affect anything, as they are all copies
+     * @return a copy of this Checkbox as a swing JCheckBoxMenuItem, with all
+     *         elements converted to their respective swing elements. Modifications
+     *         to the elements of the new JCheckBoxMenuItem will not affect
+     *         anything, as they are all copies
      */
-    public
-    JCheckBoxMenuItem asSwingComponent() {
+    public JCheckBoxMenuItem asSwingComponent() {
         JCheckBoxMenuItem jCheckBoxMenuItem = new JCheckBoxMenuItem();
 
         jCheckBoxMenuItem.setText(getText());

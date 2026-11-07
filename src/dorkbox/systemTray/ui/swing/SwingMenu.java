@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
+import javax.swing.UIManager;
 
 import dorkbox.systemTray.Checkbox;
 import dorkbox.systemTray.Entry;
@@ -45,6 +46,8 @@ class SwingMenu implements MenuPeer {
     SwingMenu(final String trayName) {
         this.parent = null;
 
+        normaliseMenuMetrics();
+
         TrayPopup trayPopup = new TrayPopup(trayName);
         if (SystemTray.SWING_UI != null) {
             trayPopup.setUI(SystemTray.SWING_UI.getMenuUI(trayPopup, null));
@@ -68,6 +71,70 @@ class SwingMenu implements MenuPeer {
 
         this._native = jMenu;
         parent._native.add(jMenu, index);
+    }
+
+    /**
+     * Swing reserves a column for a menu check mark in front of every row - the L&F's check-icon width plus a
+     * gap - whether or not the menu contains a single checkable item (Windows: 22px icon + 9px gap). In a
+     * document menu that gutter is wanted; in a tray menu it only indents every icon away from the popup
+     * edge. These defaults are zeroed before the first row exists so the icon column starts at the popup
+     * border. Rows that really are checkable still draw their own check mark.
+     * <p>
+     * Removing the reserved column also removes the only thing that used to give the rows any breathing room,
+     * and the L&F's own margins are sized for a dense application menu bar (Windows: 2px all round), which
+     * leaves a tray menu looking cramped. The margins are therefore set explicitly so every row gets the
+     * same comfortable vertical spacing and horizontal padding around its icon.
+     */
+    private static
+    void normaliseMenuMetrics() {
+        final javax.swing.Icon noIcon = new javax.swing.Icon() {
+            @Override
+            public
+            void paintIcon(final java.awt.Component c, final java.awt.Graphics g, final int x, final int y) {
+            }
+
+            @Override
+            public
+            int getIconWidth() {
+                return 0;
+            }
+
+            @Override
+            public
+            int getIconHeight() {
+                return 0;
+            }
+        };
+
+        final boolean debug = System.getProperty("dorkbox.systemTray.debugMenuMetrics") != null;
+
+        for (final String prefix : new String[] { "MenuItem", "Menu", "CheckBoxMenuItem", "RadioButtonMenuItem" }) {
+            if (debug) {
+                System.out.println("MENU METRICS [" + prefix + "] before: checkIcon=" + describeIcon(UIManager.get(prefix + ".checkIcon"))
+                                   + " checkIconOffset=" + UIManager.get(prefix + ".checkIconOffset")
+                                   + " afterCheckIconGap=" + UIManager.get(prefix + ".afterCheckIconGap")
+                                   + " minimumTextOffset=" + UIManager.get(prefix + ".minimumTextOffset"));
+            }
+
+            UIManager.put(prefix + ".checkIcon", noIcon);
+            UIManager.put(prefix + ".checkIconOffset", Integer.valueOf(0));
+            UIManager.put(prefix + ".afterCheckIconGap", Integer.valueOf(0));
+            UIManager.put(prefix + ".minimumTextOffset", Integer.valueOf(0));
+
+            // 5px above/below and 7px either side of the icon column - see the note above
+            UIManager.put(prefix + ".margin", new javax.swing.plaf.InsetsUIResource(5, 7, 5, 7));
+        }
+    }
+
+    private static
+    String describeIcon(final Object icon) {
+        if (icon == null) {
+            return "null";
+        }
+        if (icon instanceof javax.swing.Icon) {
+            return ((javax.swing.Icon) icon).getIconWidth() + "x" + ((javax.swing.Icon) icon).getIconHeight();
+        }
+        return String.valueOf(icon);
     }
 
     @Override

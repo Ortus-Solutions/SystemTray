@@ -67,13 +67,13 @@ class Notify {
      * This is the title font used by a notification.
      */
     @Property
-    public static String TITLE_TEXT_FONT = FontUtil.defaultFontSpec(16, java.awt.Font.BOLD);
+    public static String TITLE_TEXT_FONT = FontUtil.defaultFontSpec(14, java.awt.Font.BOLD);
 
     /**
      * This is the main text font used by a notification.
      */
     @Property
-    public static String MAIN_TEXT_FONT = FontUtil.defaultFontSpec(14, java.awt.Font.PLAIN);
+    public static String MAIN_TEXT_FONT = FontUtil.defaultFontSpec(12, java.awt.Font.PLAIN);
 
     /**
      * How long we want it to take for the popups to relocate when one is closed
