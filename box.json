@@ -1,7 +1,7 @@
 {
     "name": "SystemTray",
     "slug": "systemtray",
-    "version": "4.5.2",
+    "version": "4.5.3",
     "author": "Ortus Solutions",
     "shortDescription": "Cross-platform SystemTray support for Swing/AWT, GtkStatusIcon and AppIndicator",
     "ProjectURL": "https://github.com/Ortus-Solutions/SystemTray",
