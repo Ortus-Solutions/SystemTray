@@ -7,6 +7,7 @@
  * Usage:
  *
  *     box task run build              # the library jar
+ *     box task run build.bx test      # compile and run the JUnit tests
  *     box task run build.bx testJar   # self-contained jar with the test UI, for testers
  *
  * Produces dist/release/<version>/systemtray-<version>.jar
@@ -22,10 +23,27 @@ class {
 	}
 
 	/**
+	 * Compiles the library and the test source set, then runs the tests.
+	 *
+	 * Both the test source set and the test classpath come from box.json, so nothing is spelled out here.
+	 * Note that the preJavaCompile script clears dist/release, so this leaves the library jar for a following
+	 * `build`.
+	 */
+	function test() {
+		command( "install" )
+			.run();
+
+		command( "java test" )
+			.run();
+	}
+
+	/**
 	 * Self-contained test jar: the library, the test UI and every dependency in one file, so a tester can just run it.
 	 *
 	 * Compiled in a single pass (library + tests together) because box.json's preJavaCompile script clears
 	 * dist/release, which would delete the library jar a separate second pass depends on.
+	 *
+	 * The sample apps land in their own output folder, so `java test` only ever scans compiled unit tests.
 	 */
 	function testJar() {
 		command( "install" )
@@ -37,7 +55,7 @@ class {
 		command( "java compile" )
 			.params(
 				sourcePath         = "src,test-normal,test-shared",
-				classesDirectory   = "dist/test-classes",
+				classesDirectory   = "dist/sample-classes",
 				libsDirectory      = "dist/test",
 				resourcesDirectory = "src-resources,test-resources",
 				classPath          = "dist/dependencies",

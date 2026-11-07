@@ -1,7 +1,7 @@
 {
     "name": "SystemTray",
     "slug": "systemtray",
-    "version": "4.5.1",
+    "version": "4.5.2",
     "author": "Ortus Solutions",
     "shortDescription": "Cross-platform SystemTray support for Swing/AWT, GtkStatusIcon and AppIndicator",
     "ProjectURL": "https://github.com/Ortus-Solutions/SystemTray",
@@ -21,6 +21,12 @@
         "net.java.dev.jna:jna-platform": "maven:net.java.dev.jna:jna-platform:5.14.0",
         "org.slf4j:slf4j-api": "maven:org.slf4j:slf4j-api:2.0.17"
     },
+    "devDependencies": {
+        "org.junit.platform:junit-platform-console-standalone": "maven:org.junit.platform:junit-platform-console-standalone:1.12.2"
+    },
+    "installPaths": {
+        "org.junit.platform:junit-platform-console-standalone": "dist/test-dependencies/org.junit.platform-junit-platform-console-standalone"
+    },
     "scripts": {
         "preJavaCompile": [
             "delete 'dist/classes,dist/release' --force --recurse"
@@ -30,8 +36,10 @@
         "sourcePath": "src",
         "classesDirectory": "dist/classes",
         "libsDirectory": "dist/release/${@version}",
-        "resourcesDirectory": [ "src-resources" ],
-        "testSourcePath": "test-normal,test-shared",
+        "resourcesDirectory": [
+            "src-resources"
+        ],
+        "testSourcePath": "test-junit",
         "testClassesDirectory": "dist/test-classes",
         "testResourcesDirectory": "test-resources",
         "classPath": "dist/dependencies",
@@ -41,7 +49,9 @@
         },
         "fatJar": true,
         "fatJarFile": "systemtray-${@version}.jar",
-        "fatJarPaths": [ "dist/dependencies" ],
+        "fatJarPaths": [
+            "dist/dependencies"
+        ],
         "manifest": {
             "Name": "SystemTray",
             "Specification-Title": "SystemTray",

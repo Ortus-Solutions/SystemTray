@@ -45,6 +45,12 @@ jobs:
         export PATH="$HOME/.boxlang/bin:$PATH"
         box version
 
+    # The tests gate the build: a failing test fails the step, which stops the job before the jar is
+    # produced and before anything can be uploaded.
+    - name: Run tests with the task runner
+      run: |
+        box task run build.bx test
+
     # Do the build
     - name: Build with the task runner
       run: |
